@@ -34,6 +34,8 @@ public class KafkaModule extends AbstractModule
 	{
 		bind(KafkaService.class).in(Singleton.class);
 		bind(TopicParserFactory.class).to(GuiceTopicParserFactory.class).in(Singleton.class);
+
+		//Bind your topic parser into guice.
 		bind(StringTopicParser.class);
 	}
 

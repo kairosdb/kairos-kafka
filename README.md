@@ -13,6 +13,7 @@ cases.  You will need to write your own topic parser but, never fear I think
 I've made the process pretty simple.
 
 Do the following:
+
 1. Fork the plugin repo
 2. Implement your own TopicParser class.
 3. Bind your class in KafkaModule.java

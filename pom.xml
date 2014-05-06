@@ -17,10 +17,21 @@
 	</properties>
 	
 	<repositories>
-		<repository>
+		<!--<repository>
 			<id>kairos_staging</id>
-			<name>Staging repo for Kairos</name>
+			<name>Snapshot repo for Kairos</name>
 			<url>https://oss.sonatype.org/content/repositories/orgkairosdb-1003</url>
+		</repository>-->
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 	

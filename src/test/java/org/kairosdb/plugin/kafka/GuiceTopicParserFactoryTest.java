@@ -24,5 +24,21 @@ public class GuiceTopicParserFactoryTest
 		System.out.println("hey");
 	}
 
+/**
+ This shows that you can start up the entire kairos service from within a unit test
+ @throws IOException
+ @throws KairosDBException
+ @throws InterruptedException
+ */
+	@Test
+	public void runMainTest() throws IOException, KairosDBException, InterruptedException
+	{
+		Main main = new Main(null);
+		main.startServices();
+
+
+		main.stopServices();
+	}
+
 
 }

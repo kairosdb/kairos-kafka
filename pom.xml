@@ -20,7 +20,7 @@
 		<!--<repository>
 			<id>kairos_staging</id>
 			<name>Snapshot repo for Kairos</name>
-			<url>https://oss.sonatype.org/content/repositories/orgkairosdb-1003</url>
+			<url>https://oss.sonatype.org/content/repositories/orgkairosdb-1006</url>
 		</repository>-->
 		<repository>
 			<id>sonatype-nexus-snapshots</id>
@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>org.kairosdb</groupId>
 			<artifactId>kairosdb</artifactId>
-			<version>0.9.4-SNAPSHOT</version>
+			<version>0.9.4</version>
 			<scope>provided</scope>
 		</dependency>
 		

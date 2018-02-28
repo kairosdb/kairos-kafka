@@ -6,6 +6,8 @@ import org.kairosdb.core.DataPoint;
 import org.kairosdb.core.DataPointSet;
 import org.kairosdb.core.datastore.Datastore;
 import org.kairosdb.core.exception.DatastoreException;
+import org.kairosdb.eventbus.Publisher;
+import org.kairosdb.events.DataPointEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,15 +18,15 @@ public class ConsumerThread implements Runnable
 {
 	public static final Logger logger = LoggerFactory.getLogger(ConsumerThread.class);
 
-	private final Datastore m_datastore;
 	private final String m_topic;
 	private final KafkaStream<byte[], byte[]> m_stream;
 	private final int m_threadNumber;
+	private final Publisher<DataPointEvent> m_publisher;
 	private TopicParser m_topicParser;
 
-	public ConsumerThread(Datastore datastore, String topic, KafkaStream<byte[], byte[]> stream, int threadNumber)
+	public ConsumerThread(Publisher<DataPointEvent> publisher, String topic, KafkaStream<byte[], byte[]> stream, int threadNumber)
 	{
-		m_datastore = datastore;
+		m_publisher = publisher;
 		m_topic = topic;
 		m_stream = stream;
 		m_threadNumber = threadNumber;
@@ -50,19 +52,14 @@ public class ConsumerThread implements Runnable
 
 				for (DataPoint dataPoint : set.getDataPoints())
 				{
-					m_datastore.putDataPoint(set.getName(), set.getTags(), dataPoint);
+					m_publisher.post(new DataPointEvent(set.getName(), set.getTags(), dataPoint));
 				}
 
 				//m_counter.incrementAndGet();
 			}
-			catch (DatastoreException e)
-			{
-				// TODO: rewind to previous message to provide consistent consumption
-				logger.error("Failed to store datapoints: ", e);
-			}
 			catch (Exception e)
 			{
-				logger.error("Failed to parse message: " + messageAndMetadata.message(), e.getMessage());
+				logger.error("Failed to store message: " + messageAndMetadata.message(), e.getMessage());
 			}
 		}
 	}

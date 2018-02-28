@@ -17,11 +17,11 @@
 	</properties>
 	
 	<repositories>
-		<!--<repository>
+		<repository>
 			<id>kairos_staging</id>
 			<name>Snapshot repo for Kairos</name>
-			<url>https://oss.sonatype.org/content/repositories/orgkairosdb-1006</url>
-		</repository>-->
+			<url>https://oss.sonatype.org/content/repositories/orgkairosdb-1020</url>
+		</repository>
 		<repository>
 			<id>sonatype-nexus-snapshots</id>
 			<name>Sonatype Nexus Snapshots</name>
@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>org.kairosdb</groupId>
 			<artifactId>kairosdb</artifactId>
-			<version>0.9.4</version>
+			<version>1.2.0-1</version>
 			<scope>provided</scope>
 		</dependency>
 		

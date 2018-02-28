@@ -23,6 +23,9 @@ import kafka.consumer.KafkaStream;
 import org.kairosdb.core.KairosDBService;
 import org.kairosdb.core.datastore.Datastore;
 import org.kairosdb.core.exception.KairosDBException;
+import org.kairosdb.eventbus.FilterEventBus;
+import org.kairosdb.eventbus.Publisher;
+import org.kairosdb.events.DataPointEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.collection.JavaConversions;
@@ -33,26 +36,28 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class KafkaService implements KairosDBService
 {
 	public static final Logger logger = LoggerFactory.getLogger(org.kairosdb.plugin.kafka.KafkaService.class);
 
 	private final Map<String, Integer> m_topicCountMap;
-	private TopicParserFactory m_topicParserFactory;
+	private final TopicParserFactory m_topicParserFactory;
 	private final int m_threadsPerTopic;
-	private ConsumerConnector m_consumer;
+	private final ConsumerConnector m_consumer;
+	private final Publisher<DataPointEvent> m_publisher;
 	private ExecutorService m_executor;
-	private Datastore m_datastore;
 
 
 	@Inject
 	public KafkaService(@Named("kairosdb.kafka.consumer_threads") int threads,
-			Datastore datastore,
+			FilterEventBus eventBus,
 			TopicParserFactory topicParserFactory,
 			ConsumerConnector consumer)
 	{
 		m_topicParserFactory = topicParserFactory;
-		m_datastore = datastore;
+		m_publisher = checkNotNull(eventBus).createPublisher(DataPointEvent.class);
 		m_consumer = consumer;
 		ImmutableMap.Builder<String, Integer> topicThreadMapBuilder = ImmutableMap.builder();
 
@@ -83,7 +88,7 @@ public class KafkaService implements KairosDBService
 			int threadNumber = 0;
 			for (final KafkaStream<byte[], byte[]> stream : streams)
 			{
-				ConsumerThread ct = new ConsumerThread(m_datastore, topic, stream, threadNumber);
+				ConsumerThread ct = new ConsumerThread(m_publisher, topic, stream, threadNumber);
 				ct.setTopicParser(m_topicParserFactory.getTopicParser(topic));
 
 				m_executor.submit(ct);
